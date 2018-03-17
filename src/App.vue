@@ -25,9 +25,19 @@ export default {
 
   data () {
     return {
-      seller: {} // props 验证对象的初始值与传递值类型必须一致，否则就算传递正确类型也会报错。因为 props 验证也包括初始值类型验证
+      
+      /**
+       * app.vue 中 created 函数是异步请求，那么初始化时第一次传递给 sellerData  的
+       * 就是 seller 的初始值，即 {} ，在 created 异步请求返回后，回调函数内 seller
+       *  变化，那么重新传递 sellerData 值，此时传递正常数据值。由此，在示例中，初始
+       * 化时会props 值会变化两次。因此子组件会检查两次 sellerData 的类型，两次均为
+       * Object 才能通过检测，否则报错
+       */
+
+      seller: {} 
     }
   },
+
   created () {
     getSeller.then(res => {
       if (res.errno === checkStatu) {
