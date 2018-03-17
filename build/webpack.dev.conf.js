@@ -28,8 +28,15 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   // these devServer options should be customized in /config/index.js
   devServer: {
 
-    // devServer.before 用于在服务器内部在所有中间件执行前定义自定义处理程序，即在本地模拟数据传输
+    // devServer.before 用于在服务器内部所有中间件执行前定义自定义处理程序，即可在本地模拟服务器数据返回
     // https://doc.webpack-china.org/configuration/dev-server/#devserver-before
+
+    /**
+     * https://github.com/webpack/webpack-dev-server
+     * 1. 据上链 project in maintenance 部分，webpack-dev-server 现阶段内置使用
+     * Express 中间件，在 server 中使用 before 或 after 钩子。
+     * 2. Express 中间件 API ：http://expressjs.com/en/4x/api.html#res.get
+     */
     before (app) {
       app.get('/api/seller', (req, res) => {
         res.json({

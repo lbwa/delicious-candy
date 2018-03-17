@@ -1,0 +1,24 @@
+@import './utils.scss';
+
+// media 查询前缀，需要手动添加，postcss 的 autoprefixer 不会补全 media 查询条件
+
+@media (min-device-pixel-ratio: 1.5), (-webkit-min-device-pixel-ratio: 1.5) {
+  .scale {
+    &:after {
+      transform: scaleY(0.7);  // 1.5 * 0.7 约等于 1 像素
+    }
+  }
+};
+
+@media (min-device-pixel-ratio: 2), (-webkit-min-device-pixel-ratio: 2) {
+  .scale {
+    &:after {
+      transform: scaleY(0.5);
+    }
+  }
+};
+
+body, html {
+  font-family: PingFang SC, Arial, Helvetica, sans-serif;
+  font-weight: $font-weight-normal;
+}

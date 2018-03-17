@@ -1,0 +1,76 @@
+@import './utils.scss';
+
+.app-header {
+  background: rgba($color-bgc, 0.5);
+  color: $color-empty;
+  .content-wrapper {
+    padding: 24px 12px 18px 24px;
+    font-size: 0; // 消除容器元素中各个元素之间的空白，与子元素 font-size 配合使用
+    .avatar {
+      display: inline-block;
+      vertical-align: top;  // 把元素顶端与整行的顶端对齐
+      img {
+        border-radius: 2px;
+      }
+    }
+    .content-text {
+      display: inline-block;
+      margin-left: 16px;
+      .text-title {
+        margin: 2px 0 8px 0;
+        .brand {
+          display: inline-block;
+          vertical-align: top;  // 把元素顶端与整行的顶端对齐
+          width: 30px;
+          height: 18px;
+          @include bg-img('~@/assets/AppHeader/brand');
+          background-size: 30px 18px;
+        }
+        .seller-name {
+          margin-left: 6px;
+          font-size: 16px;
+          line-height: 18px;
+          font-weight: bold;
+        }
+      };
+      .text-description {
+        margin-bottom: 10px;
+        font-size: $small/2;
+        line-height: $small/2;
+      }
+      .text-support {
+        .icon {
+          display: inline-block;
+          vertical-align: top;
+          width: 12px;
+          height: 12px;
+          margin-right: 4px;
+          &.decrease {
+            @include bg-img('~@/assets/AppHeader/decrease_1');
+            background-size: 12px 12px;
+          }
+          &.discount {
+            @include bg-img('~@/assets/AppHeader/discount_1');
+            background-size: 12px 12px;
+          }
+          &.guarantee {
+            @include bg-img('~@/assets/AppHeader/guarantee_1');
+            background-size: 12px 12px;
+          }
+          &.invoice {
+            @include bg-img('~@/assets/AppHeader/invoice_1');
+            background-size: 12px 12px;
+          }
+          &.special {
+            @include bg-img('~@/assets/AppHeader/special_1');
+            background-size: 12px 12px;
+          }
+        }
+        .support-text {
+          line-height: 12px;
+          font-size: $micro/2;
+        }
+      }
+    }
+  }
+}
