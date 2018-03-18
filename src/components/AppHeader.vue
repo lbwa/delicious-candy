@@ -23,16 +23,63 @@
           <span class="support-text">{{ sellerData.supports[0].description }}</span>
         </div>
       </div>
+
+      <div class="support-count" v-if="sellerData.supports" @click="toggleSellerDetail">
+        <span class="count">{{ sellerData.supports.length }}个</span>
+        <span class="icon-keyboard_arrow_right"></span>
+      </div>
+    </div>
+
+    <div class="bulletin-wrapper" @click="toggleSellerDetail">
+      <span class="bulletin-icon"></span><span class="bulletin-text">{{ sellerData.bulletin }}</span>
+      <span class="icon-keyboard_arrow_right"></span>
+    </div>
+
+    <div class="app-header-bg">
+      <img :src="sellerData.avatar" width="100%" height="100%" alt="app-header-bg">
+    </div>
+
+    <!-- v-show 与 v-if 区别在于 v-show 仅是 display 的切换，一定会渲染该元素 -->
+    <div v-show="showSellerDetail" class="seller-detail">
+
+      <div class="detail-wrapper clearfix"><!-- 用于包装内容区，撑开视口，使 footer 保持在底部 -->
+        <div class="seller-detail-main">
+          <h1 class="seller-name">{{ sellerData.name }}</h1>
+          <BaseStar :score="sellerData.score || 0" :size="48"></BaseStar>
+        </div>
+      </div>
+
+      <div class="close-detail">
+        <i class="icon-close" @click="toggleSellerDetail"></i>
+      </div>
+
     </div>
   </div>
 </template>
 
 <script>
+import BaseStar from 'v-parts/BaseStar'
+
 export default {
+  components: {
+    BaseStar
+  },
   props: {
     sellerData: {
       type: Object,
       required: true
+    }
+  },
+
+  data () {
+    return {
+      showSellerDetail: true
+    }
+  },
+
+  methods: {
+    toggleSellerDetail () {
+      this.showSellerDetail = !this.showSellerDetail
     }
   },
 

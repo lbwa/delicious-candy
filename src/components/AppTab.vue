@@ -19,6 +19,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~v-style/AppTab.scss';  // 非 js 模块别名， 要在使用时加前缀 ~ ，以帮助 webpack 识别别名
+@import '~v-style/AppTab.scss';  // 非 js 模块别名， 要在使用时加前缀 ~ ，以帮助 webpack 识别别名，否则将是 loader 来识别 style 标签中的引用地址
 
 </style>

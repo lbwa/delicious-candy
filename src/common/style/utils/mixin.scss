@@ -29,4 +29,30 @@
   @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3) {
     background: url($url+'@3x.png') no-repeat;
   }
-;}
+};
+
+@mixin star-size($side, $margin-r, $size) {
+  &.star-#{$size} {
+    .star-item {
+      display: inline-block;
+      width: $side;
+      height: $side;
+      margin-right: $margin-r;
+      &:last-child {
+        margin-right: 0;
+      }
+      &.on {
+        @include bg-img('~@/assets/BaseStar/star#{$size}_on');
+        background-size: $side $side;
+      }
+      &.half {
+        @include bg-img('~@/assets/BaseStar/star#{$size}_half');
+        background-size: $side $side;
+      }
+      &.off {
+        @include bg-img('~@/assets/BaseStar/star#{$size}_off');
+        background-size: $side $side;
+      }
+    }
+  }
+}

@@ -25,7 +25,7 @@ export default {
 
   data () {
     return {
-      
+
       /**
        * app.vue 中 created 函数是异步请求，那么初始化时第一次传递给 sellerData  的
        * 就是 seller 的初始值，即 {} ，在 created 异步请求返回后，回调函数内 seller
@@ -34,11 +34,12 @@ export default {
        * Object 才能通过检测，否则报错
        */
 
-      seller: {} 
+      seller: {}
     }
   },
 
   created () {
+    // 取得头部商家信息
     getSeller.then(res => {
       if (res.errno === checkStatu) {
         this.seller = res.data
