@@ -1,6 +1,7 @@
 <template>
   <div class="content-goods">
-    Goods area
+   <div class="menu-wrapper"></div>
+   <div class="foods-wrapper"></div>
   </div>
 </template>
 
@@ -11,5 +12,5 @@ export default {
 </script>
 
 <style lang="scss">
-
+@import '~v-style/ContentGoods.scss';
 </style>

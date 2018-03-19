@@ -39,21 +39,51 @@
       <img :src="sellerData.avatar" width="100%" height="100%" alt="app-header-bg">
     </div>
 
-    <!-- v-show 与 v-if 区别在于 v-show 仅是 display 的切换，一定会渲染该元素 -->
-    <div v-show="showSellerDetail" class="seller-detail">
+    <!-- 弹出详情页开始 -->
 
-      <div class="detail-wrapper clearfix"><!-- 用于包装内容区，撑开视口，使 footer 保持在底部 -->
-        <div class="seller-detail-main">
-          <h1 class="seller-name">{{ sellerData.name }}</h1>
-          <BaseStar :score="sellerData.score || 0" :size="48"></BaseStar>
+    <!-- v-show 与 v-if 区别在于 v-show 仅是 display 的切换，一定会渲染该元素 -->
+    <transition name="fade">
+      <div v-show="showSellerDetail" class="seller-detail">
+
+        <div class="detail-wrapper clearfix"><!-- 用于包装内容区，撑开视口，使 footer 保持在底部 -->
+          <div class="seller-detail-main">
+            <h1 class="seller-name">{{ sellerData.name }}</h1>
+            <!-- 星星组件容器 -->
+            <div class="star-wrapper">
+              <BaseStar :score="sellerData.score || 0" :size="48"></BaseStar>
+            </div>
+
+            <div class="seller-detail-title">
+              <div class="line"></div>
+              <div class="text">优惠信息</div>
+              <div class="line"></div>
+            </div>
+
+            <ul v-if="sellerData.supports" class="seller-detail-supports">
+              <li class="supports-item" v-for="(item, index) of sellerData.supports" :key="index">
+                <span :class="['icon', classMap[sellerData.supports[index].type]]"></span>
+                <span class="text">{{sellerData.supports[index].description}}</span>
+              </li>
+            </ul>
+
+            <div class="seller-detail-title">
+              <div class="line"></div>
+              <div class="text">商家公告</div>
+              <div class="line"></div>
+            </div>
+
+            <div class="seller-detail-description">
+              <p class="text">{{ sellerData.bulletin }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="close-detail">
+          <i class="icon-close" @click="toggleSellerDetail"></i>
         </div>
       </div>
+    </transition>
 
-      <div class="close-detail">
-        <i class="icon-close" @click="toggleSellerDetail"></i>
-      </div>
-
-    </div>
   </div>
 </template>
 
@@ -73,7 +103,7 @@ export default {
 
   data () {
     return {
-      showSellerDetail: true
+      showSellerDetail: false
     }
   },
 

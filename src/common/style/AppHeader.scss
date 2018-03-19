@@ -28,6 +28,7 @@
           height: 18px;
           @include bg-img('~@/assets/AppHeader/brand');
           background-size: 30px 18px;
+          background-repeat: no-repeat;
         }
         .seller-name {
           margin-left: 6px;
@@ -48,25 +49,22 @@
           width: 12px;
           height: 12px;
           margin-right: 4px;
+          background-size: 12px 12px;
+          background-repeat: no-repeat;
           &.decrease {
             @include bg-img('~@/assets/AppHeader/decrease_1');
-            background-size: 12px 12px;
           }
           &.discount {
             @include bg-img('~@/assets/AppHeader/discount_1');
-            background-size: 12px 12px;
           }
           &.guarantee {
             @include bg-img('~@/assets/AppHeader/guarantee_1');
-            background-size: 12px 12px;
           }
           &.invoice {
             @include bg-img('~@/assets/AppHeader/invoice_1');
-            background-size: 12px 12px;
           }
           &.special {
             @include bg-img('~@/assets/AppHeader/special_1');
-            background-size: 12px 12px;
           }
         }
         .support-text {
@@ -115,6 +113,7 @@
       font-size: $micro/2;
       @include bg-img('~@/assets/AppHeader/bulletin');
       background-size: 22px 12px;
+      background-repeat: no-repeat;
     }
     .bulletin-text {
       font-size: $micro/2;
@@ -146,6 +145,15 @@
     height: 100%;
     overflow: auto; // hidden 当内容超过屏幕高度将不能滚动
     background: rgba($color-bgc, 0.8);
+    backdrop-filter: blur(10px);  // ，模糊背景，仅在手机端有效
+    // 动画开始
+    &.fade-enter, &.fade-leave-to {
+      opacity: 0;
+    }
+    &.fade-enter-active, &.fade-leave-active {
+      transition: all .5s ease;
+    }
+    // 动画结束
     .detail-wrapper {
       min-height: 100%;
       width: 100%;
@@ -159,6 +167,77 @@
           font-weight: bold;
           color: rgba($color-empty, 1);
           line-height: $big/2;
+        }
+        .star-wrapper {
+          margin-top: 18px;
+          padding: 2px 0;
+        }
+        .seller-detail-title {
+          display: flex;
+          width: 80%;
+          margin: 28px auto 24px auto;
+          .line {
+            flex: 1;
+            position: relative;
+            top: -6px;
+            border-bottom: 1px solid rgba($color-empty, 0.2)
+          }
+          .text {
+            padding: 0 12px;
+            font-size: $mid/2;
+            font-weight: bold;
+          }
+        }
+        .seller-detail-supports {
+          width: 80%;
+          margin: 0 auto;
+          text-align: left;
+          .supports-item {
+            padding: 0 12px;
+            margin-bottom: 12px;
+            font-size: 0;
+            &:last-child {
+              margin-bottom: 0;
+            }
+            .icon {
+              display: inline-block;
+              width: 16px;
+              height: 16px;
+              vertical-align: top;
+              margin-right: 6px;
+              background-size: 16px 16px;
+              background-repeat: no-repeat;
+              &.decrease {
+                @include bg-img('~@/assets/AppHeader/decrease_2');
+              }
+              &.discount {
+                @include bg-img('~@/assets/AppHeader/discount_2');
+              }
+              &.guarantee {
+                @include bg-img('~@/assets/AppHeader/guarantee_2');
+              }
+              &.invoice {
+                @include bg-img('~@/assets/AppHeader/invoice_2');
+              }
+              &.special {
+                @include bg-img('~@/assets/AppHeader/special_2');
+              }
+            }
+            .text {
+              line-height: 16px;
+              font-size: 12px;
+            }
+          }
+        }
+        .seller-detail-description {
+          width: 80%;
+          margin: 0 auto;
+          text-align: left;
+          .text {
+            font-size: 12px;
+            padding: 0 12px;
+            line-height: 24px;
+          }
         }
       }
     }
