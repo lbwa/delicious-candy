@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <AppHeader :sellerData="seller"></AppHeader>
+    <AppHeader :sellerData="sellerDetail"></AppHeader>
     <AppTab></AppTab>
     <keep-alive>
-      <router-view/>
+      <router-view :sellerData="sellerFoods"/>
     </keep-alive>
   </div>
 </template>
@@ -11,7 +11,7 @@
 <script>
 import AppHeader from 'v-parts/AppHeader'
 import AppTab from 'v-parts/AppTab'
-import { getSeller } from '@/api'
+import { getSeller, getGoods } from '@/api'
 
 const checkStatu = 0
 
@@ -34,7 +34,8 @@ export default {
        * Object 才能通过检测，否则报错
        */
 
-      seller: {}
+      sellerDetail: {}, // 商家信息
+      sellerFoods: []   // 商品信息
     }
   },
 
@@ -42,9 +43,17 @@ export default {
     // 取得头部商家信息
     getSeller.then(res => {
       if (res.errno === checkStatu) {
-        this.seller = res.data
+        this.sellerDetail = res.data
       } else {
-        console.log(`Error: Response errno is ${res.errno}, please fix it !`)
+        throw Error(`Error: Response errno is ${res.errno}, please fix it !`)
+      }
+    })
+    // 取得商品信息
+    getGoods.then(res => {
+      if (res.errno === checkStatu) {
+        this.sellerFoods = res.data
+      } else {
+        throw Error(`Error: Response errno is ${res.errno}, please fix it !`)
       }
     })
   }
@@ -53,5 +62,40 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~v-style/App.scss'
+@import '~v-style/utils.scss';
+
+// media 查询前缀，需要手动添加，postcss 的 autoprefixer 不会补全 media 查询条件
+
+@media (min-device-pixel-ratio: 1.5), (-webkit-min-device-pixel-ratio: 1.5) {
+  .scale {
+    &:after {
+      transform: scaleY(0.7);  // 1.5 * 0.7 约等于 1 像素
+    }
+  }
+};
+
+@media (min-device-pixel-ratio: 2), (-webkit-min-device-pixel-ratio: 2) {
+  .scale {
+    &:after {
+      transform: scaleY(0.5);
+    }
+  }
+};
+
+body, html {
+  font-family: PingFang SC, Arial, Helvetica, sans-serif;
+  font-weight: $font-weight-normal;
+}
+
+.clearfix {
+  display: inline-block;
+  &:after {
+    display: block;
+    content: '.';
+    height: 0;
+    line-height: 0;
+    clear: both;
+    visibility: hidden;
+  }
+}
 </style>

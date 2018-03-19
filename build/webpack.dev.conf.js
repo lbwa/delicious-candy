@@ -9,7 +9,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
-const appData = require('../mock/data.json')
+const appData = require('../mock/data.json') // 引入 mock 数据文件
 
 const seller = appData.seller
 const goods = appData.goods

@@ -1,3 +1,4 @@
+// 集中处理 api 方法
 import axios from 'axios'
 
 export const getGoods = axios.get('/api/goods').then(res => res.data, e => console.log(e))

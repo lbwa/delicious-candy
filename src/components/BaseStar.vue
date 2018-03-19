@@ -57,5 +57,12 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~v-style/BaseStar.scss';
+@import '~v-style/utils.scss';
+
+.star-rate {
+  font-size: 0;
+  @include star-size(20px, 22px, 48);
+  @include star-size(15px, 6px, 36);
+  @include star-size(10px, 3px, 24)
+}
 </style>

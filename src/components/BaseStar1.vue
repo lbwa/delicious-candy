@@ -40,5 +40,28 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~v-style/BaseStar1.scss';
+@import '~v-style/utils.scss';
+
+.ratings-star {
+  font-size: 0;
+  margin: 32px 0 56px 0;
+  .count-star {
+    display: inline-block;
+    @include bg-img('~@/assets/BaseStar/star24_on');
+    height: 20px;
+    width: 20px;
+  }
+  .count-half-star {
+    display: inline-block;
+    @include bg-img('~@/assets/BaseStar/star24_half');
+    height: 20px;
+    width: 20px;
+  }
+  .count-off-star {
+    display: inline-block;
+    @include bg-img('~@/assets/BaseStar/star24_off');
+    height: 20px;
+    width: 20px;
+  }
+}
 </style>
