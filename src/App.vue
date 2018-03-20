@@ -3,7 +3,7 @@
     <AppHeader :sellerData="sellerDetail"></AppHeader>
     <AppTab></AppTab>
     <keep-alive>
-      <router-view :sellerData="sellerFoods"/>
+      <router-view :sellerData="sellerDetail"/>
     </keep-alive>
   </div>
 </template>
@@ -11,11 +11,9 @@
 <script>
 import AppHeader from 'v-parts/AppHeader'
 import AppTab from 'v-parts/AppTab'
-import { getSeller, getGoods } from '@/api'
+import { getSeller } from '@/api'
 
 const checkStatu = 0
-
-// 子组件数据在共有父组件中集中处理
 
 export default {
   components: {
@@ -34,8 +32,7 @@ export default {
        * Object 才能通过检测，否则报错
        */
 
-      sellerDetail: {}, // 商家信息
-      sellerFoods: []   // 商品信息
+      sellerDetail: {} // 商家信息
     }
   },
 
@@ -48,20 +45,13 @@ export default {
         throw Error(`Error: Response errno is ${res.errno}, please fix it !`)
       }
     })
-    // 取得商品信息
-    getGoods.then(res => {
-      if (res.errno === checkStatu) {
-        this.sellerFoods = res.data
-      } else {
-        throw Error(`Error: Response errno is ${res.errno}, please fix it !`)
-      }
-    })
   }
 }
 
 </script>
 
 <style lang="scss">
+@import '~@/common/reset/reset.scss';
 @import '~v-style/utils.scss';
 
 // media 查询前缀，需要手动添加，postcss 的 autoprefixer 不会补全 media 查询条件
