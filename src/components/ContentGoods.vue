@@ -38,6 +38,11 @@
                   <span class="new-price">￥{{ item.price }}</span>
                   <span class="old-price" v-show="item.oldPrice">￥{{ item.oldPrice }}</span>
                 </div>
+
+                <div class="cart-btn-wrapper">
+                  <!-- 传入一个商品 -->
+                  <BaseCartBtn :singleGood="item"></BaseCartBtn>
+                </div>
               </div>
 
             </li>
@@ -46,7 +51,11 @@
       </ul>
     </div>
 
-    <GoodsCart :sellerData="sellerData"></GoodsCart>
+    <GoodsCart
+    :selectedGoods="selectedGoods"
+    :deliveryPrice="sellerData.deliveryPrice"
+    :minPrice="sellerData.minPrice"
+    ></GoodsCart>
 
   </div>
 </template>
@@ -55,6 +64,7 @@
 import { getGoods } from '@/api'
 import BetterScorll from 'better-scroll'
 import GoodsCart from 'v-parts/ContentGoodsCart'
+import BaseCartBtn from 'v-parts/BaseCartBtn'
 
 const checkStatu = 0
 
@@ -89,7 +99,8 @@ export default {
   },
 
   components: {
-    GoodsCart
+    GoodsCart,
+    BaseCartBtn
   },
 
   computed: {
@@ -102,6 +113,18 @@ export default {
         }
       }
       return 0
+    },
+
+    selectedGoods () {
+      let hasSelected = []
+      this.goodsDetail.forEach(good => { // 每一类
+        good.foods.forEach(item => {  // 每一单项
+          if (item.count) {
+            hasSelected.push(item)
+          }
+        })
+      })
+      return hasSelected
     }
   },
 
@@ -136,7 +159,7 @@ export default {
     selectMenu (index) { // 传入点击的 index
       let goodsList = this.$refs.goodsList
       let el = goodsList[index]
-      this.goodsScroll.scrollToElement(el, 100)
+      this.goodsScroll.scrollToElement(el, 300) // 滚动延时 300
     },
 
     _initScroll () {
@@ -144,6 +167,7 @@ export default {
         click: true
       })
       this.goodsScroll = new BetterScorll(this.$refs.goodsWrapper, {
+        click: true,
         probeType: 3 // 在滚动时实时监测位置
       })
       this.goodsScroll.on('scroll', pos => {
@@ -295,6 +319,11 @@ export default {
               font-size: $micro/2;
               font-weight: normal;
             }
+          }
+          .cart-btn-wrapper {
+            position: absolute;
+            right: 0;
+            bottom: 12px;
           }
         }
       }
