@@ -1,6 +1,6 @@
 <template>
   <div class="goods-cart">
-    <div class="cart-content">
+    <div class="cart-content" @click="toggleCartList">
       <div class="cart-content-left">
 
         <div class="logo-wrapper">
@@ -22,6 +22,7 @@
       </div>
 
     </div>
+    <!-- 小球 -->
     <div class="ball-container">
       <div
       v-for="(ball, index) of balls"
@@ -34,11 +35,37 @@
         </transition>
       </div>
     </div>
+    <!-- 所购买物品清单页 -->
+    <div class="cart-list" v-show="true">
+      <div class="list-header">
+        <h1 class="title">购物车</h1>
+        <span class="clear-cart">清空</span>
+      </div>
+      <div class="list-content">
+        <ul>
+          <li
+          class="item"
+          v-for="(item, index) of selectedGoods"
+          :key="index">
+            <div class="name">{{ item.name }}</div>
+            <div class="price">
+              <span>￥{{ item.price * item.quantity }}</span>
+            </div>
+
+            <div class="cart-wrapper">
+              <BaseCartBtn :singleGood="item"/>
+            </div>
+
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import EventBus from '@/EventBus'
+import BaseCartBtn from 'v-parts/BaseCartBtn'
 
 export default {
   props: {
@@ -61,6 +88,10 @@ export default {
     }
   },
 
+  components: {
+    BaseCartBtn
+  },
+
   data () {
     return {
       balls: [
@@ -71,7 +102,9 @@ export default {
         { show: false }
       ],
 
-      dropBalls: []
+      dropBalls: [],
+
+      fold: true  // 折叠购物车详情
     }
   },
 
@@ -79,16 +112,16 @@ export default {
     totalPrice () {  // 总价
       let total = 0
       this.selectedGoods.forEach(item => {
-        total += item.price * item.count
+        total += item.price * item.quantity
       })
       return total
     },
     totalCount () {  // 总数量
-      let count = 0
+      let quantity = 0
       this.selectedGoods.forEach(item => {
-        count += item.count
+        quantity += item.quantity
       })
-      return count
+      return quantity
     },
     totalPriceDescription () {  // 判断提交按钮显示文字
       if (this.totalPrice === 0) {
@@ -98,6 +131,14 @@ export default {
       } else {
         return `去结算`
       }
+    },
+    showList () {
+      if (!this.totalCount) {
+        return false
+      }
+      // 最佳实践是 在计算属性中禁止对 data 对象进行修改，否则警告 vue/no-side-effects-in-computed-properties
+      let show = !this.fold
+      return show
     }
   },
 
@@ -152,11 +193,18 @@ export default {
         ball.show = false
         el.style.display = 'none'
       }
+    },
+
+    toggleCartList () {
+      if (!this.totalCount) {
+        return
+      }
+      this.fold = !this.fold
     }
   },
 
   created () {
-    EventBus.$on('addItemToCart', this.drop)  // 来自 BaseCartBtn.vue
+    EventBus.$on('activateAnimation', this.drop)  // 来自 BaseCartBtn.vue
   }
 }
 </script>
@@ -282,6 +330,33 @@ export default {
           background: rgb(0, 160, 220);
           transition: all .4s linear;  // 此处 transition-timing-function 与cubic-bezier 呼应，变化时间函数值必为线性变化，否则小球轨迹很诡异
         }
+      }
+    }
+  }
+  .cart-list {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    width: 100%;
+    .list-header {
+      background: #f3f5f7;
+      font-size: 0;
+      .title {
+        display: inline-block;
+        margin-left: 18px;
+        vertical-align: top;
+        font-size: $mid/2;
+        font-weight: 200;
+        color: $color-bgc;
+        line-height: 40px;
+      }
+      .clear-cart {
+        float: right;
+        margin-right: 18px;
+        font-size: $small/2;
+        color: rgb(0, 160, 220);
+        line-height: 40px;
       }
     }
   }

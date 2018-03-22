@@ -2,6 +2,10 @@
 
 这个应用的诞生不仅仅是为了提高自己的 JS 代码水平与样式布局能力，也还是为了锻炼自身模块组织思维，以严格的生产标准要求自己，完全复原设计稿。
 
+[master分支][master]使用 `Global Event Bus`
+
+[vuex分支][vuex]使用 `Vuex`
+
 ## 编码风格
 
 本实例中 JS 编写风格是参考 [JavaScript Standard Style][standard]
@@ -42,3 +46,7 @@
 [standard]:https://github.com/standard/standard
 
 [vue-style]:https://cn.vuejs.org/v2/style-guide/
+
+[master]:https://github.com/lbwa/eleme-candy/tree/master
+
+[vuex]:https://github.com/lbwa/eleme-candy/tree/vuex

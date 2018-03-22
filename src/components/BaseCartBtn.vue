@@ -3,13 +3,13 @@
     <transition name="move">
       <div
       class="cart-decrease"
-      v-show="good.count > 0"
+      v-show="good.quantity > 0"
       @click="subtractItem">
       <span class="inner icon-remove_circle_outline"></span>
       </div>
     </transition>
 
-    <div class="cart-count" v-show="good.count > 0">{{ good.count }}</div>
+    <div class="cart-quantity" v-show="good.quantity > 0">{{ good.quantity }}</div>
     <div class="cart-increase icon-add_circle" @click="addItem"></div>
   </div>
 </template>
@@ -19,7 +19,7 @@ import EventBus from '@/EventBus'
 
 export default {
   props: {
-    singleGood: {
+    singleGood: {  // 来自 ContentGoodsCart 或 ContentGoods
       type: Object
     }
   },
@@ -36,20 +36,20 @@ export default {
     addItem () {
       // https://cn.vuejs.org/v2/guide/reactivity.html#检测变化的注意事项
       // Vue 本身不能够响应（监听）对象的属性的添加（删除），除非使用 Vue.set( object, key, value )或 Vue.delete( target, key ) 方法。
-      if (!this.good.count) {
+      if (!this.good.quantity) {
         // this.$set(object, key, value) 是 Vue.set() 的别名
-        this.$set(this.good, 'count', 1)
+        this.$set(this.good, 'quantity', 1)
       } else {
-        this.good.count += 1
+        this.good.quantity += 1
       }
-      EventBus.$emit('addItemToCart', event.target)  // contentGoodsCart.vue 监听
+      EventBus.$emit('activateAnimation', event.target)  // contentGoodsCart.vue 监听
     },
 
     subtractItem () {
-      if (this.good.count === 0) {
+      if (this.good.quantity === 0) {
         return
       }
-      this.good.count -= 1
+      this.good.quantity -= 1
     }
   }
 }
@@ -60,7 +60,7 @@ export default {
 
 .cart-btn {
   font-size: 0;
-  .cart-decrease, .cart-count, .cart-increase, .inner {
+  .cart-decrease, .cart-quantity, .cart-increase, .inner {
     display: inline-block;
   }
   .cart-increase {
@@ -91,7 +91,7 @@ export default {
       }
     }
   }
-  .cart-count {
+  .cart-quantity {
     vertical-align: top;
     width: 12px;
     padding-top: 6px;

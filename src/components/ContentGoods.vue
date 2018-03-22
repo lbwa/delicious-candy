@@ -105,7 +105,7 @@ export default {
       let hasSelected = []
       this.goodsDetail.forEach(good => { // 每一类
         good.foods.forEach(item => {  // 每一单项
-          if (item.count) {
+          if (item.quantity) {
             hasSelected.push(item)
           }
         })
