@@ -41,7 +41,7 @@
 
                 <div class="cart-btn-wrapper">
                   <!-- 传入一个商品 -->
-                  <BaseCartBtn :singleGood="item"></BaseCartBtn>
+                  <BaseCartBtn :singleGood="item"/>
                 </div>
               </div>
 
@@ -55,7 +55,7 @@
     :selectedGoods="selectedGoods"
     :deliveryPrice="sellerData.deliveryPrice"
     :minPrice="sellerData.minPrice"
-    ></GoodsCart>
+    />
 
   </div>
 </template>

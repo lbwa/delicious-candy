@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import EventBus from '@/EventBus'
+
 export default {
   props: {
     singleGood: {
@@ -40,6 +42,7 @@ export default {
       } else {
         this.good.count += 1
       }
+      EventBus.$emit('addItemToCart', event.target)  // contentGoodsCart.vue 监听
     },
 
     subtractItem () {
