@@ -15,9 +15,9 @@
 
       </div>
 
-      <div :class="['cart-content-right', totalPrice > minPrice ? 'cancel-limit' : '']">
+      <div :class="['cart-content-right', totalPrice >= minPrice ? 'cancel-limit' : '']">
         <span
-        :class="['submit-order', totalPrice > minPrice ? 'cancel-limit' : '']"
+        :class="['submit-order', totalPrice >= minPrice ? 'cancel-limit' : '']"
         >{{ totalPriceDescription }}</span>
       </div>
 

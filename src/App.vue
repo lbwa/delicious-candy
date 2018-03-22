@@ -38,7 +38,7 @@ export default {
 
   created () {
     // 取得头部商家信息
-    getSeller.then(res => {
+    getSeller().then(res => {
       if (res.errno === checkStatu) {
         this.sellerDetail = res.data
       } else {
