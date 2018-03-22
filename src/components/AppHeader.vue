@@ -127,7 +127,7 @@ export default {
   position: relative;
   background: rgba($color-bgc, 0.5);
   color: $color-empty;
-  overflow: hidden;  // 消除滤镜露出阴影
+  overflow: hidden;  // 消除因滤镜泄漏出边缘的阴影
   .content-wrapper {
     position: relative;
     padding: 24px 12px 18px 24px;

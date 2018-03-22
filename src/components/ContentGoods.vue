@@ -76,20 +76,6 @@ export default {
     }
   },
 
-  // computed: {
-
-  //   /**
-  //     * 此处 goodsDetail 不应处理为 data 对象，因为在初始化时，GoodsData 为初始值
-  //     * （空数组，在 App.vue 中定义），data 对象不会响应 props 的变化，那么初始页面将
-  //     * 为空白，故设定计算属性来处理 props 对象的传入值
-  //     * 注：因为初始化时，ajax 为异步请求，故第一次传入的是初始值
-  //     */
-
-  //   goodsDetail () {
-  //     return this.GoodsData
-  //   }
-  // },
-
   data () {
     return {
       goodsDetail: [],
@@ -131,7 +117,7 @@ export default {
   created () {
     this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
     // 取得商品信息
-    getGoods.then(res => {
+    getGoods().then(res => {
       if (res.errno === checkStatu) {
         this.goodsDetail = res.data
 

@@ -8,13 +8,15 @@
       <span class="inner icon-remove_circle_outline"></span>
       </div>
     </transition>
-    
+
     <div class="cart-count" v-show="good.count > 0">{{ good.count }}</div>
-    <div class="cart-increase icon-add_circle" @click="addItem"></div>
+    <div class="cart-increase icon-add_circle" @click="addGoodsToCart(good)"></div>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   props: {
     singleGood: {
@@ -31,6 +33,9 @@ export default {
   },
 
   methods: {
+    ...mapActions([
+      'addGoodsToCart'
+    ]),
     addItem () {
       // https://cn.vuejs.org/v2/guide/reactivity.html#检测变化的注意事项
       // Vue 本身不能够响应（监听）对象的属性的添加（删除），除非使用 Vue.set( object, key, value )或 Vue.delete( target, key ) 方法。
@@ -43,6 +48,9 @@ export default {
     },
 
     subtractItem () {
+      if (this.good.count === 0) {
+        return
+      }
       this.good.count -= 1
     }
   }

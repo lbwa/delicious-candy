@@ -4,20 +4,20 @@
       <div class="cart-content-left">
 
         <div class="logo-wrapper">
-          <div :class="['logo-content', totalCount ? 'cart-not-empty' : '']">
-            <i :class="['icon-shopping_cart', totalCount ? 'cart-not-empty' : '']"></i>
+          <div :class="['logo-content', cartTotalQuantity ? 'cart-not-empty' : '']">
+            <i :class="['icon-shopping_cart', cartTotalQuantity ? 'cart-not-empty' : '']"></i>
           </div>
-          <div class="select-total-count" v-show="totalCount !== 0">{{ totalCount }}</div>
+          <div class="select-total-count" v-show="cartTotalQuantity !== 0">{{ cartTotalQuantity }}</div>
         </div>
 
-        <div :class="['total-price', totalPrice ? 'cart-not-empty' : '']">￥{{ totalPrice }}</div>
+        <div :class="['total-price', cartTotalPrice ? 'cart-not-empty' : '']">￥{{ cartTotalPrice }}</div>
         <div class="cart-description">另需配送费￥{{ deliveryPrice }}元</div>
 
       </div>
 
-      <div :class="['cart-content-right', totalPrice > minPrice ? 'cancel-limit' : '']">
+      <div :class="['cart-content-right', cartTotalPrice >= minPrice ? 'cancel-limit' : '']">
         <span
-        :class="['submit-order', totalPrice > minPrice ? 'cancel-limit' : '']"
+        :class="['submit-order', cartTotalPrice >= minPrice ? 'cancel-limit' : '']"
         >{{ totalPriceDescription }}</span>
       </div>
 
@@ -26,17 +26,19 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   props: {
-    selectedGoods: {
-      type: Array,
-      default () {
-        return [{
-          price: 0, // 单价
-          count: 0  // 单个类别商品的选择总数量
-        }]
-      }
-    },
+    // selectedGoods: {
+    //   type: Array,
+    //   default () {
+    //     return [{
+    //       // 后期若要显示具体所选项目，于每个 item 添加一个 id 属性予以记录所选项目
+    //       price: 0, // 单价
+    //       count: 0  // 单个类别商品的选择总数量
+    //     }]
+    //   }
+    // },
     deliveryPrice: {
       type: Number,
       default: 0
@@ -48,25 +50,29 @@ export default {
   },
 
   computed: {
-    totalPrice () {  // 总价
-      let total = 0
-      this.selectedGoods.forEach(item => {
-        total += item.price * item.count
-      })
-      return total
-    },
-    totalCount () {  // 总数量
-      let count = 0
-      this.selectedGoods.forEach(item => {
-        count += item.count
-      })
-      return count
-    },
+    ...mapGetters([
+      'cartTotalPrice',
+      'cartTotalQuantity'
+    ]),
+    // totalPrice () {  // 总价
+    //   let total = 0
+    //   this.selectedGoods.forEach(item => {
+    //     total += item.price * item.count
+    //   })
+    //   return total
+    // },
+    // totalCount () {  // 总数量
+    //   let count = 0
+    //   this.selectedGoods.forEach(item => {
+    //     count += item.count
+    //   })
+    //   return count
+    // },
     totalPriceDescription () {  // 判断提交按钮显示文字
-      if (this.totalPrice === 0) {
+      if (this.cartTotalPrice === 0) {
         return `￥${this.minPrice}起送`
-      } else if (this.totalPrice < this.minPrice) {
-        return `还差￥${this.minPrice - this.totalPrice} 起送`
+      } else if (this.cartTotalPrice < this.minPrice) {
+        return `还差￥${this.minPrice - this.cartTotalPrice} 起送`
       } else {
         return `去结算`
       }
