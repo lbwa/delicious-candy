@@ -1,4 +1,5 @@
 <template>
+<div class="goods-cart-wrapper">
   <div class="goods-cart">
     <div class="cart-content" @click="toggleCartList">
       <div class="cart-content-left">
@@ -15,7 +16,7 @@
 
       </div>
 
-      <div :class="['cart-content-right', totalPrice >= minPrice ? 'cancel-limit' : '']">
+      <div :class="['cart-content-right', totalPrice >= minPrice ? 'cancel-limit' : '']" @click.stop="submitOrder">
         <span
         :class="['submit-order', totalPrice >= minPrice ? 'cancel-limit' : '']"
         >{{ totalPriceDescription }}</span>
@@ -36,36 +37,44 @@
       </div>
     </div>
     <!-- 所购买物品清单页 -->
-    <div class="cart-list" v-show="true">
-      <div class="list-header">
-        <h1 class="title">购物车</h1>
-        <span class="clear-cart">清空</span>
-      </div>
-      <div class="list-content">
-        <ul>
-          <li
-          class="item"
-          v-for="(item, index) of selectedGoods"
-          :key="index">
-            <div class="name">{{ item.name }}</div>
-            <div class="price">
-              <span>￥{{ item.price * item.quantity }}</span>
-            </div>
+    <transition name="fold">
+      <div class="cart-list scale" v-show="showList">
+        <div class="list-header">
+          <h1 class="title">购物车</h1>
+          <span class="clear-cart" @click="cleaner">清空</span>
+        </div>
+        <div class="list-content" ref="scroll">
+          <ul>
+            <li
+            class="item"
+            v-for="(item, index) of goodsInCart"
+            :key="index">
+              <div class="name">{{ item.name }}</div>
+              <div class="price">
+                <span>￥{{ item.price * item.quantity }}</span>
+              </div>
 
-            <div class="cart-wrapper">
-              <BaseCartBtn :singleGood="item"/>
-            </div>
+              <div class="cart-wrapper">
+                <BaseCartBtn :singleGood="item"/>
+              </div>
 
-          </li>
-        </ul>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
+    </transition>
   </div>
+
+  <transition name="fade">
+    <div class="goods-cart-bg" v-show="showList" @click="toggleCartList"></div>
+  </transition>
+</div>
 </template>
 
 <script>
 import EventBus from '@/EventBus'
 import BaseCartBtn from 'v-parts/BaseCartBtn'
+import BetterScroll from 'better-scroll'
 
 export default {
   props: {
@@ -109,20 +118,26 @@ export default {
   },
 
   computed: {
+    goodsInCart () {
+      return this.selectedGoods
+    },
+
     totalPrice () {  // 总价
       let total = 0
-      this.selectedGoods.forEach(item => {
+      this.goodsInCart.forEach(item => {
         total += item.price * item.quantity
       })
       return total
     },
+
     totalCount () {  // 总数量
       let quantity = 0
-      this.selectedGoods.forEach(item => {
+      this.goodsInCart.forEach(item => {
         quantity += item.quantity
       })
       return quantity
     },
+
     totalPriceDescription () {  // 判断提交按钮显示文字
       if (this.totalPrice === 0) {
         return `￥${this.minPrice}起送`
@@ -132,12 +147,23 @@ export default {
         return `去结算`
       }
     },
+
     showList () {
       if (!this.totalCount) {
         return false
       }
       // 最佳实践是 在计算属性中禁止对 data 对象进行修改，否则警告 vue/no-side-effects-in-computed-properties
       let show = !this.fold
+
+      /**
+       * 因为 computed 属性设定的角色定位是仅仅是一个 getter ，不包括setter，为不偏
+       * 离 getter 的角色定位，故将对 this.scroll 的初始化提炼出为一个方法，通过调用
+       * 这个方法来初始化 this.scroll 且不叛离 computed 属性的 getter 角色定位
+       *
+       * 否则，报错 Unexpected side effect in “showList” computed property
+       */
+
+      this.initScroll(show)
       return show
     }
   },
@@ -200,6 +226,34 @@ export default {
         return
       }
       this.fold = !this.fold
+    },
+
+    cleaner () {
+      this.fold = true // 还原折叠状态，防止再次添加商品至购物车时直接弹出详情
+      // 为了让 Vue Devtools 记录此清除事件
+      EventBus.$emit('clearAllSelectedgoods')  // ContentGoods 接收
+    },
+
+    // 用于购物车详情页的滚动初始化
+    initScroll (show) {
+      if (show) {
+        this.$nextTick(() => {
+          if (!this.scroll) {
+            this.scroll = new BetterScroll(this.$refs.scroll, {
+              click: true
+            })
+          } else {
+            this.scroll.refresh()
+          }
+        })
+      }
+    },
+
+    submitOrder () {
+      if (this.totalPrice < this.minPrice) {
+        return
+      }
+      alert(`总共支付￥${this.totalPrice}元`)
     }
   },
 
@@ -339,8 +393,16 @@ export default {
     top: 0;
     z-index: -1;
     width: 100%;
+    transform: translate3d(0, -100%, 0);  // -100% 相对于当前高度做 -100% 偏移
+    &.fold-enter-active, &.fold-leave-active {
+      transition: all .5s;
+    }
+    &.fold-enter, &.fold-leave-to {
+      transform: translate3d(0, 0, 0);
+    }
     .list-header {
       background: #f3f5f7;
+      @include bottom-1px(rgba(7, 17, 27, 0.1));
       font-size: 0;
       .title {
         display: inline-block;
@@ -359,6 +421,57 @@ export default {
         line-height: 40px;
       }
     }
+    .list-content {
+      background: $color-empty;
+      max-height: 217px;
+      padding: 0 18px;
+      overflow: hidden;
+      .item {
+        position: relative;
+        box-sizing: border-box;
+        padding: 12px 0;
+        @include bottom-1px(rgba(7, 17, 27, 0.1));
+        .name {
+          display: inline-block;
+          vertical-align: top;
+          font-size: $mid/2;
+          color: $color-bgc;
+          line-height: 24px;
+        }
+        .price {
+          position: absolute;
+          right: 90px;
+          bottom: 12px;
+          font-size: $mid/2;
+          font-weight: 700;
+          color: rgb(240, 20, 20);
+          line-height: 24px;
+        }
+        .cart-wrapper {
+          position: absolute;
+          right: 0;
+          bottom: 6px;
+        }
+      }
+    }
+  }
+}
+.goods-cart-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 40;
+  opacity: 1;
+  background: rgba(7, 17, 27, 0.6);
+  backdrop-filter: blur(10px);
+  &.fade-enter, &.fade-leave-to {
+    opacity: 0;
+    background: rgba(7, 17, 27, 0);
+  }
+  &.fade-enter-active, &.fade-leave-active {
+    transition: all .5s
   }
 }
 </style>

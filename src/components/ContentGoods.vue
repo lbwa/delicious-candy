@@ -65,6 +65,7 @@ import { getGoods } from '@/api'
 import BetterScorll from 'better-scroll'
 import GoodsCart from 'v-parts/ContentGoodsCart'
 import BaseCartBtn from 'v-parts/BaseCartBtn'
+import EvnetBus from '@/EventBus'
 
 const checkStatu = 0
 
@@ -136,6 +137,12 @@ export default {
       } else {
         throw Error(`Error: Response errno is ${res.errno}, please fix it !`)
       }
+    })
+    // 清空购物车
+    EvnetBus.$on('clearAllSelectedgoods', () => {  // 来自 ContentGoodsCart
+      this.selectedGoods.forEach(good => {
+        good.quantity = 0
+      })
     })
   },
 
