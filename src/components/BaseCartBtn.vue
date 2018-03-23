@@ -4,13 +4,13 @@
       <div
       class="cart-decrease"
       v-show="good.quantity > 0"
-      @click="subtractItem">
+      @click.stop.prevent="subtractItem">
       <span class="inner icon-remove_circle_outline"></span>
       </div>
     </transition>
 
     <div class="cart-quantity" v-show="good.quantity > 0">{{ good.quantity }}</div>
-    <div class="cart-increase icon-add_circle" @click="addItem"></div>
+    <div class="cart-increase icon-add_circle" @click.stop.prevent="addItem"></div><!-- .stop.prevent 阻止事件冒泡弹出商品详情页 -->
   </div>
 </template>
 

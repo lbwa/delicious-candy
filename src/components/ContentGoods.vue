@@ -19,7 +19,7 @@
         <li v-for="(parentItem, index) of goodsDetail" :key="index" class="goods-list" ref="goodsList">
           <h1 class="title">{{ parentItem.name }}</h1>
           <ul>
-            <li v-for="(item, index) of parentItem.foods" :key="index" class="goods-item scale">
+            <li v-for="(item, index) of parentItem.foods" :key="index" class="goods-item scale" @click="selectGood(item, $event)">
 
               <div class="goods-icon">
                 <img :src="item.icon" alt="goods-icon" width="57px" height="57px">
@@ -52,10 +52,12 @@
     </div>
 
     <GoodsCart
-    :selectedGoods="selectedGoods"
+    :addGoodsToCart="addGoodsToCart"
     :deliveryPrice="sellerData.deliveryPrice"
     :minPrice="sellerData.minPrice"
     />
+
+    <BaseGoodDetail  :selectedGood="selectedGood" ref="goodDetail"/>
 
   </div>
 </template>
@@ -65,6 +67,7 @@ import { getGoods } from '@/api'
 import BetterScorll from 'better-scroll'
 import GoodsCart from 'v-parts/ContentGoodsCart'
 import BaseCartBtn from 'v-parts/BaseCartBtn'
+import BaseGoodDetail from 'v-parts/BaseGoodDetail'
 import EvnetBus from '@/EventBus'
 
 const checkStatu = 0
@@ -81,13 +84,15 @@ export default {
     return {
       goodsDetail: [],
       listHeight: [],
-      scrollY: 0 // 当前滑动位置
+      scrollY: 0, // 当前滑动位置
+      selectedGood: {}
     }
   },
 
   components: {
     GoodsCart,
-    BaseCartBtn
+    BaseCartBtn,
+    BaseGoodDetail
   },
 
   computed: {
@@ -102,7 +107,7 @@ export default {
       return 0
     },
 
-    selectedGoods () {
+    addGoodsToCart () {
       let hasSelected = []
       this.goodsDetail.forEach(good => { // 每一类
         good.foods.forEach(item => {  // 每一单项
@@ -139,8 +144,8 @@ export default {
       }
     })
     // 清空购物车
-    EvnetBus.$on('clearAllSelectedgoods', () => {  // 来自 ContentGoodsCart
-      this.selectedGoods.forEach(good => {
+    EvnetBus.$on('clearAllGoodsInCart', () => {  // 来自 ContentGoodsCart
+      this.addGoodsToCart.forEach(good => {
         good.quantity = 0
       })
     })
@@ -180,6 +185,11 @@ export default {
         height += item.clientHeight
         this.listHeight.push(height)
       }
+    },
+
+    selectGood (good, event) {
+      this.selectedGood = good
+      this.$refs.goodDetail.show()  // 调用子组件的 show 方法
     }
   }
 }

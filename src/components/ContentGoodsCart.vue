@@ -16,7 +16,7 @@
 
       </div>
 
-      <div :class="['cart-content-right', totalPrice >= minPrice ? 'cancel-limit' : '']" @click.stop="submitOrder">
+      <div :class="['cart-content-right', totalPrice >= minPrice ? 'cancel-limit' : '']" @click.stop.prevent="submitOrder"><!-- stop 阻止事件冒泡，prevent 阻止重载页面 -->
         <span
         :class="['submit-order', totalPrice >= minPrice ? 'cancel-limit' : '']"
         >{{ totalPriceDescription }}</span>
@@ -78,7 +78,7 @@ import BetterScroll from 'better-scroll'
 
 export default {
   props: {
-    selectedGoods: {
+    addGoodsToCart: {
       type: Array,
       default () {
         return [{
@@ -119,7 +119,7 @@ export default {
 
   computed: {
     goodsInCart () {
-      return this.selectedGoods
+      return this.addGoodsToCart
     },
 
     totalPrice () {  // 总价
@@ -140,9 +140,9 @@ export default {
 
     totalPriceDescription () {  // 判断提交按钮显示文字
       if (this.totalPrice === 0) {
-        return `￥${this.minPrice}起送`
+        return `￥${this.minPrice} 元起送`
       } else if (this.totalPrice < this.minPrice) {
-        return `还差￥${this.minPrice - this.totalPrice} 起送`
+        return `还差￥${this.minPrice - this.totalPrice} 元起送`
       } else {
         return `去结算`
       }
@@ -231,7 +231,7 @@ export default {
     cleaner () {
       this.fold = true // 还原折叠状态，防止再次添加商品至购物车时直接弹出详情
       // 为了让 Vue Devtools 记录此清除事件
-      EventBus.$emit('clearAllSelectedgoods')  // ContentGoods 接收
+      EventBus.$emit('clearAllGoodsInCart')  // ContentGoods 接收
     },
 
     // 用于购物车详情页的滚动初始化
