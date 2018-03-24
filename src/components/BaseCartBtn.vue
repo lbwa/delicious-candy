@@ -19,7 +19,7 @@ import EventBus from '@/EventBus'
 
 export default {
   props: {
-    singleGood: {  // 来自 ContentGoodsCart 或 ContentGoods
+    singleGood: {  // 来自 ContentGoodsCart / ContentGoods
       type: Object
     }
   },
@@ -33,7 +33,10 @@ export default {
   },
 
   methods: {
-    addItem () {
+    addItem (event) {
+      if (!event._constructed) {
+        return
+      }
       // https://cn.vuejs.org/v2/guide/reactivity.html#检测变化的注意事项
       // Vue 本身不能够响应（监听）对象的属性的添加（删除），除非使用 Vue.set( object, key, value )或 Vue.delete( target, key ) 方法。
       if (!this.good.quantity) {

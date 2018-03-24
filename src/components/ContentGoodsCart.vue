@@ -186,6 +186,7 @@ export default {
       while (count--) {
         let ball = this.balls[count]
         if (ball.show) {
+          // Element.getBoundingClientRect() 返回元素的大小及其相对于视口的位置。
           let rect = ball.el.getBoundingClientRect()
           let x = rect.left - 32
           let y = -(window.innerHeight - rect.top - 22)
