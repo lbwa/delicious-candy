@@ -39,7 +39,35 @@
 
       <div class="good-ratings">
         <h1 class="title">商品评价</h1>
-        <BaseRatingsSelector :singleGood="selectedGood"/>
+        <BaseRatingsSelector
+        :ratings="selectedGood.ratings"
+        :desc="{ all:'全部', positive:'推荐', negative:'吐槽'}"
+        @filterRatingsType="toggleRatingsType"
+        @fullContent="toggleFullContent"
+        />
+        <!-- 单个商品评论区 -->
+        <div class="ratings-wrapper">
+          <ul>
+            <li
+            class="ratings-item scale"
+            v-for="(item, index) of filterRatings"
+            :key="index"
+            v-show="filterFullContent(item.rateType, item.text)"
+            >
+              <div class="rate-time">{{ (new Date(item.rateTime)).toLocaleString()}}</div>
+              <div class="user">
+                <span class="user-name">{{ item.username }}</span>
+                <img :src="item.avatar" alt="user-avatar" width="12" height="12">
+              </div>
+              <p class="ratings-text">
+                <span class="icon-thumb_up" v-if="item.rateType !== 1"></span>
+                <span class="icon-thumb_down" v-else></span>
+                <span class="ratings-text-content">{{ item.text }}</span>
+              </p>
+            </li>
+          </ul>
+        </div>
+
       </div>
     </div>
   </div>
@@ -51,6 +79,10 @@ import BetterScroll from 'better-scroll'
 import BaseCartBtn from './BaseCartBtn'
 import BaseSplit from './BaseSplit'
 import BaseRatingsSelector from './BaseRatingsSelector'
+
+const POSITIVE = 0  // 单个商品的 rateType 值
+const NEGATIVE = 1
+const ALL = 2
 
 export default {
   props: {
@@ -68,7 +100,20 @@ export default {
   data () {
     return {
       showDetail: false,
-      isActive: false
+      selectedType: ALL,  // 当前选中评论类型
+      fullContent: false  // 排除空评论
+    }
+  },
+
+  computed: {
+    filterRatings () {
+      if (this.selectedType === ALL) {
+        return this.selectedGood.ratings
+      } else if (this.selectedType === POSITIVE) {
+        return this.selectedGood.ratings.filter(item => item.rateType === POSITIVE)
+      } else {
+        return this.selectedGood.ratings.filter(item => item.rateType === NEGATIVE)
+      }
     }
   },
 
@@ -92,6 +137,21 @@ export default {
 
     addToCart (event) {
       this.$refs.btn.addItem(event)
+    },
+
+    toggleRatingsType (type) {
+      this.selectedType = type
+    },
+
+    toggleFullContent (param) {
+      this.fullContent = param
+    },
+
+    filterFullContent (type, text) {
+      if (this.fullContent && !text) {
+        return false
+      }
+      return true
     }
   }
 }
@@ -226,6 +286,59 @@ export default {
     .title {
       margin: 0 18px;
       font-size: 14px;
+    }
+    .ratings-wrapper {
+      padding: 0 18px;
+      .ratings-item {
+        position: relative;
+        padding: 16px 0;
+        @include bottom-1px(rgba($color-bgc, .1));
+        &:last-child {
+          @include border-none;
+        }
+        .rate-time {
+          margin-bottom: 6px;
+          font-size: 10px;
+          color: rgb(147, 153, 159);
+          line-height: 12px;
+        }
+        .user {
+          position: absolute;
+          top: 16px;
+          right: 0;
+          .user-name {
+            display: inline-block;
+            vertical-align: top;
+            margin-right: 6px;
+            font-size: 10px;
+            color: rgb(147, 153, 159);
+            line-height: 12px;
+          }
+          img {
+            vertical-align: top;
+            border-radius: 6px;
+          }
+        }
+        .ratings-text {
+          .icon-thumb_up, .icon-thumb_down, .ratings-text-content {
+            font-size: 12px;
+          }
+          .icon-thumb_up, .icon-thumb_down {
+            margin-right: 4px;
+            line-height: 16px;
+          }
+          .icon-thumb_up {
+            color: rgba(0, 160, 220, 1);
+          }
+          .icon-thumb_down {
+            color: rgb(147, 153, 159);
+          }
+          .ratings-text-content {
+            line-height: 16px;
+            color: rgb(7, 17, 27);
+          }
+        }
+      }
     }
   }
 }

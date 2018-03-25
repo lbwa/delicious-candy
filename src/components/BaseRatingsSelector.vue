@@ -1,55 +1,72 @@
 <template>
   <div class="ratings-selector">
     <div class="ratings-type scale">
-      <div class="all-ratings">全部<span class="count">{{ allRatings }}</span>
+      <div
+      class="all-ratings"
+      @click="toggleType(2)">{{ desc.all }}<span class="count">{{ this.ratings.length }}</span></div>
+
+      <div
+      class="positive-ratings"
+      @click="toggleType(0)">{{ desc.positive }}<span class="count">{{ positiveRatings }}</span>
       </div>
-      <div class="positive-ratings">推荐<span class="count">{{ positiveRatings }}</span>
-      </div>
-      <div class="negative-ratings">吐槽<span class="count">{{ allRatings - positiveRatings }}</span>
+
+      <div
+      class="negative-ratings"
+      @click="toggleType(1)">{{ desc.negative }}<span class="count">{{ this.ratings.length - positiveRatings }}</span>
       </div>
     </div>
 
-    <div class="ratings-switch" @click="toggleActive">
-      <span :class="['icon-check_circle', isActive ? 'on' : '']"></span>
+    <div class="ratings-switch" @click="toggleContent">
+      <span :class="['icon-check_circle', isFullContent ? 'on' : '']"></span>
       <span class="content">只看有内容的评价</span>
     </div>
   </div>
 </template>
 
 <script>
+const POSITIVE = 0 // ratings 数组中 rateType 值
+
 export default {
   props: {
-    singleGood: {
-      type: Object
+    ratings: {
+      type: Array,
+      default () {
+        return []
+      }
+    },
+
+    desc: {
+      type: Object,
+      default () {
+        return {
+          all: '全部',
+          positive: '满意',
+          negative: '不满意'
+        }
+      }
     }
   },
 
   data () {
     return {
-      isActive: false
+      isFullContent: false
     }
   },
 
   computed: {
-    // 在初始化组件时用户还未点击商品前，传入的对象为空
-    allRatings () {
-      if (Object.keys(this.singleGood).length === 0) {  // 检测对象是否为空
-        return
-      }
-      return this.singleGood.ratings.length
-    },
     positiveRatings () {
-      if (Object.keys(this.singleGood).length === 0) {  // 传入对象为空时，不筛选
-        return
-      }
-      const result = this.singleGood.ratings.filter(item => item.rateType === 0).length
-      return result
+      return this.ratings.filter(item => item.rateType === POSITIVE).length
     }
   },
 
   methods: {
-    toggleActive () {
-      this.isActive = !this.isActive
+    toggleContent () {
+      this.isFullContent = !this.isFullContent
+      this.$emit('fullContent', this.isFullContent)
+    },
+
+    toggleType (type) {
+      this.$emit('filterRatingsType', type)
     }
   }
 }
