@@ -2,16 +2,16 @@
   <div class="ratings-selector">
     <div class="ratings-type scale">
       <div
-      class="all-ratings"
+      :class="['all-ratings', selectedType === 2 ? 'active' : '']"
       @click="toggleType(2)">{{ desc.all }}<span class="count">{{ this.ratings.length }}</span></div>
 
       <div
-      class="positive-ratings"
+      :class="['positive-ratings', selectedType === 0 ? 'active' : '']"
       @click="toggleType(0)">{{ desc.positive }}<span class="count">{{ positiveRatings }}</span>
       </div>
 
       <div
-      class="negative-ratings"
+      :class="['negative-ratings', selectedType === 1 ? 'active' : '']"
       @click="toggleType(1)">{{ desc.negative }}<span class="count">{{ this.ratings.length - positiveRatings }}</span>
       </div>
     </div>
@@ -32,6 +32,12 @@ export default {
       type: Array,
       default () {
         return []
+      }
+    },
+
+    selectedType: {  // 仅用于切换评价类效果
+      default () {
+        return 2
       }
     },
 
@@ -92,20 +98,23 @@ export default {
         font-size: 8px;
       }
     }
-    .positive-ratings, .negative-ratings {
+    .all-ratings, .positive-ratings, .negative-ratings {
       color: rgb(77, 85, 93);
-    }
-    .all-ratings {
-      margin-right: 8px;
-      color: $color-empty;
-      background: rgba(0, 160, 220, 1);
-    }
-    .positive-ratings {
-      margin-right: 8px;
       background: rgba(0, 160, 220, .2);
+    }
+    .all-ratings, .positive-ratings {
+      margin-right: 8px;
+      &.active {
+        color: $color-empty;
+        background: rgba(0, 160, 220, 1);
+      }
     }
     .negative-ratings {
       background: rgba(77, 85, 93, .2);
+      &.active {
+        color: $color-empty;
+        background: #4d555d;
+      }
     }
   }
   .ratings-switch {

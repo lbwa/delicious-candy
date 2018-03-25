@@ -41,6 +41,7 @@
         <h1 class="title">商品评价</h1>
         <BaseRatingsSelector
         :ratings="selectedGood.ratings"
+        :selectedType="selectedType"
         :desc="{ all:'全部', positive:'推荐', negative:'吐槽'}"
         @filterRatingsType="toggleRatingsType"
         @fullContent="toggleFullContent"
@@ -65,6 +66,8 @@
                 <span class="ratings-text-content">{{ item.text }}</span>
               </p>
             </li>
+
+            <li class="empty-rating" v-show="!selectedGood.ratings || !selectedGood.ratings.length">暂无评价</li>
           </ul>
         </div>
 
@@ -141,10 +144,16 @@ export default {
 
     toggleRatingsType (type) {
       this.selectedType = type
+      this.$nextTick(() => {
+        this.scroll.refresh()
+      })
     },
 
     toggleFullContent (param) {
       this.fullContent = param
+      this.$nextTick(() => {
+        this.scroll.refresh()
+      })
     },
 
     filterFullContent (type, text) {
@@ -338,6 +347,11 @@ export default {
             color: rgb(7, 17, 27);
           }
         }
+      }
+      .empty-rating {
+        padding: 16px 0;
+        font-size: 12px;
+        color: #93999f;
       }
     }
   }
