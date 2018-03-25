@@ -70,7 +70,7 @@ import BaseCartBtn from 'v-parts/BaseCartBtn'
 import BaseGoodDetail from 'v-parts/BaseGoodDetail'
 import EvnetBus from '@/EventBus'
 
-const checkStatu = 0
+const checkStatus = 0
 
 export default {
   props: {
@@ -124,7 +124,7 @@ export default {
     this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
     // 取得商品信息
     getGoods().then(res => {
-      if (res.errno === checkStatu) {
+      if (res.errno === checkStatus) {
         this.goodsDetail = res.data
 
         /**

@@ -39,10 +39,12 @@
 
       <div class="good-ratings">
         <h1 class="title">商品评价</h1>
+
         <BaseRatingsSelector
         :ratings="selectedGood.ratings"
         :selectedType="selectedType"
-        :desc="{ all:'全部', positive:'推荐', negative:'吐槽'}"
+        :fullContent="fullContent"
+        :desc="ratingsDescription"
         @filterRatingsType="toggleRatingsType"
         @fullContent="toggleFullContent"
         />
@@ -104,7 +106,12 @@ export default {
     return {
       showDetail: false,
       selectedType: ALL,  // 当前选中评论类型
-      fullContent: false  // 排除空评论
+      fullContent: false,  // 排除空评论
+      ratingsDescription: {
+        all: '全部',
+        positive: '推荐',
+        negative: '吐槽'
+      }
     }
   },
 
@@ -149,8 +156,8 @@ export default {
       })
     },
 
-    toggleFullContent (param) {
-      this.fullContent = param
+    toggleFullContent () {
+      this.fullContent = !this.fullContent
       this.$nextTick(() => {
         this.scroll.refresh()
       })
@@ -285,7 +292,7 @@ export default {
       padding: 0 8px 0 8px;
       font-size: 12px;
       font-weight: 200;
-      color: rgb(77, 85, 93);
+      color: $color-normal;
       line-height: 24px;
     }
   }
@@ -344,7 +351,7 @@ export default {
           }
           .ratings-text-content {
             line-height: 16px;
-            color: rgb(7, 17, 27);
+            color: $color-bgc;
           }
         }
       }

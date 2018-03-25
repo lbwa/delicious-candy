@@ -17,7 +17,7 @@
     </div>
 
     <div class="ratings-switch" @click="toggleContent">
-      <span :class="['icon-check_circle', isFullContent ? 'on' : '']"></span>
+      <span :class="['icon-check_circle', fullContent ? 'on' : '']"></span>
       <span class="content">只看有内容的评价</span>
     </div>
   </div>
@@ -25,6 +25,7 @@
 
 <script>
 const POSITIVE = 0 // ratings 数组中 rateType 值
+const ALL = 2
 
 export default {
   props: {
@@ -35,9 +36,17 @@ export default {
       }
     },
 
-    selectedType: {  // 仅用于切换评价类效果
+    selectedType: {  // 仅用于切换评价类别
+      type: Number,
       default () {
-        return 2
+        return ALL  // 默认选择显示所有评价
+      }
+    },
+
+    fullContent: {  // 仅用于切换样式
+      type: Boolean,
+      default () {
+        return false
       }
     },
 
@@ -53,12 +62,6 @@ export default {
     }
   },
 
-  data () {
-    return {
-      isFullContent: false
-    }
-  },
-
   computed: {
     positiveRatings () {
       return this.ratings.filter(item => item.rateType === POSITIVE).length
@@ -67,11 +70,10 @@ export default {
 
   methods: {
     toggleContent () {
-      this.isFullContent = !this.isFullContent
-      this.$emit('fullContent', this.isFullContent)
+      this.$emit('fullContent')
     },
 
-    toggleType (type) {
+    toggleType (type) {  // 在父组件修改 selectedType，是为保证单向数据流
       this.$emit('filterRatingsType', type)
     }
   }
@@ -86,6 +88,7 @@ export default {
   .ratings-type {
     margin: 0 18px;
     padding: 18px 0;
+    font-size: 0;
     @include bottom-1px(rgba($color-bgc, .1));
     .all-ratings, .positive-ratings, .negative-ratings {
       display: inline-block;
@@ -99,21 +102,21 @@ export default {
       }
     }
     .all-ratings, .positive-ratings, .negative-ratings {
-      color: rgb(77, 85, 93);
-      background: rgba(0, 160, 220, .2);
+      color: $color-normal;
+      background: rgba($color-button, .2);
     }
     .all-ratings, .positive-ratings {
       margin-right: 8px;
       &.active {
         color: $color-empty;
-        background: rgba(0, 160, 220, 1);
+        background: rgba($color-button, 1);
       }
     }
     .negative-ratings {
-      background: rgba(77, 85, 93, .2);
+      background: rgba($color-normal, .2);
       &.active {
         color: $color-empty;
-        background: #4d555d;
+        background: rgba($color-normal, 1);
       }
     }
   }
@@ -123,7 +126,7 @@ export default {
     color: rgb(147, 153, 159);
     line-height: 24px;
     .icon-check_circle {
-      display: inline-block;
+      display: inline-block;  // 当 webfont 与文字没有对齐时，设 webfont 为行内块元素，且设置 vertical-align: top
       vertical-align: top;
       margin-right: 4px;
       font-size: 24px;
