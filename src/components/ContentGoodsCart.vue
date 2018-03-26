@@ -466,7 +466,7 @@ export default {
   z-index: 40;
   opacity: 1;
   background: rgba(7, 17, 27, 0.6);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);  // 仅限手机端生效，如 ios
   &.fade-enter, &.fade-leave-to {
     opacity: 0;
     background: rgba(7, 17, 27, 0);

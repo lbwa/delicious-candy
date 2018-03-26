@@ -56,7 +56,7 @@
                 <span class="delivery-time" v-if="item.deliveryTime">{{ item.deliveryTime }}分钟送达</span>
               </div>
 
-              <div class="rate-time">{{(new Date(item.rateTime)).toLocaleString()}}</div>
+              <div class="rate-time">{{ item.rateTime | formatDate }}</div>
 
               <p class="rate-content" v-if="item.text">{{ item.text }}</p>
 
@@ -78,6 +78,7 @@ import BaseSplit from './BaseSplit'
 import BaseRatingsSelector from './BaseRatingsSelector'
 import BaseStar from './BaseStar'
 import BetterScroll from 'better-scroll'
+import { formatDate } from '@/common/js/formatDate'
 
 const checkStatus = 0  // 正常 errno 值
 const ALL = 2 // rateType 值
@@ -132,6 +133,16 @@ export default {
         return false
       }
       return true
+    },
+
+    _initScroll () {
+      if (!this.scroll) {
+        this.scroll = new BetterScroll(this.$refs.scroll, {
+          click: true
+        })
+      } else {
+        this.scroll.refresh()
+      }
     }
   },
 
@@ -146,18 +157,25 @@ export default {
       if (res.errno === checkStatus) {
         this.allRatings = res.data
         this.$nextTick(() => {
-          if (!this.scroll) {
-            this.scroll = new BetterScroll(this.$refs.scroll, {
-              click: true
-            })
-          } else {
-            this.scroll.refresh()
-          }
+          this._initScroll()
         })
       } else {
         throw Error(`check errno failed. erron is ${res.errno} !`)
       }
     })
+  },
+
+  activated () { // 在 keep-alive 中的组件被激活时调用
+    this.$nextTick(() => {
+      this._initScroll()
+    })
+  },
+
+  filters: {
+    formatDate (time) {
+      let date = new Date(time)
+      return formatDate(date, 'yyyy-MM-dd hh:mm')  // 通用模块分离
+    }
   }
 }
 </script>
@@ -165,7 +183,7 @@ export default {
 <style lang="scss">
 @import '~v-style/utils.scss';
 .content-ratings {
-  position: absolute;
+  position: absolute; // 相对于 body 绝对定位
   top: 174px;
   bottom: 0;  // 确定父元素大小，better-scroll 才能对其第一个子元素生效
   width: 100%;

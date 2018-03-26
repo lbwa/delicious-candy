@@ -57,7 +57,7 @@
             :key="index"
             v-show="filterFullContent(item.rateType, item.text)"
             >
-              <div class="rate-time">{{ (new Date(item.rateTime)).toLocaleString()}}</div>
+              <div class="rate-time">{{ item.rateTime | formatDate }}</div>
               <div class="user">
                 <span class="user-name">{{ item.username }}</span>
                 <img :src="item.avatar" alt="user-avatar" width="12" height="12">
@@ -84,6 +84,7 @@ import BetterScroll from 'better-scroll'
 import BaseCartBtn from './BaseCartBtn'
 import BaseSplit from './BaseSplit'
 import BaseRatingsSelector from './BaseRatingsSelector'
+import { formatDate } from '@/common/js/formatDate'
 
 const POSITIVE = 0  // 单个商品的 rateType 值
 const NEGATIVE = 1
@@ -168,6 +169,13 @@ export default {
         return false
       }
       return true
+    }
+  },
+
+  filters: {
+    formatDate (time) {
+      let date = new Date(time)
+      return formatDate(date, 'yyyy-MM-dd hh:mm')  // 通用模块分离
     }
   }
 }
