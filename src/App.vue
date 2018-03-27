@@ -12,6 +12,7 @@
 import AppHeader from 'v-parts/AppHeader'
 import AppTab from 'v-parts/AppTab'
 import { getSeller } from '@/api'
+import { urlParse } from '@/common/js/util.js'
 
 const checkStatu = 0
 
@@ -32,17 +33,22 @@ export default {
        * Object 才能通过检测，否则报错
        */
 
-      sellerDetail: {} // 商家信息
+      sellerDetail: {
+        id: (() => {
+          let queryParam = urlParse()
+          return queryParam.id
+        })()
+      } // 商家信息
     }
   },
 
   created () {
     // 取得头部商家信息
-    getSeller().then(res => {
+    getSeller({params: {id: this.sellerDetail.id}}).then(res => {
       if (res.errno === checkStatu) {
-        this.sellerDetail = res.data
+        this.sellerDetail = Object.assign({}, this.sellerDetail, res.data)
       } else {
-        throw Error(`Error: Response errno is ${res.errno}, please fix it !`)
+        throw Error(`Check errno failed, errno is ${res.errno} !`)
       }
     })
   }

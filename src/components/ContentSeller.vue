@@ -12,7 +12,7 @@
 
           <div
           class="collection-btn"
-          @click="addToCollected"
+          @click="toggleCollected"
           >
             <div :class="['icon-favorite', hasCollected ? 'active' : '']"></div>
             <div class="text">{{ collectedContent }}</div>
@@ -62,7 +62,9 @@
         <div class="img-list-wrapper" ref="imgs">
           <ul class="img-list" ref="imgsList">
             <li class="img-item" v-for="(item, index) of sellerData.pics" :key="index">
-              <img :src="item" alt="seller-pics" width="120" height="90">
+              <div class="img-wrapper"><!-- 用于占位 -->
+                <img :src="item" alt="seller-pics" width="100%" height="100%">
+              </div>
             </li>
           </ul>
         </div>
@@ -85,6 +87,7 @@
 import BaseSplit from './BaseSplit'
 import BaseStar from './BaseStar'
 import BetterScroll from 'better-scroll'
+import { saveToLocal, loadFormLocal } from '@/common/js/store'
 
 export default {
   props: {
@@ -96,7 +99,9 @@ export default {
 
   data () {
     return {
-      hasCollected: false,
+      hasCollected: (() => {
+        return loadFormLocal(this.sellerData.id, 'hasCollected', false)
+      })(),
       classMap: ['decrease', 'discount', 'special', 'invoice', 'guarantee']
     }
   },
@@ -108,8 +113,9 @@ export default {
   },
 
   methods: {
-    addToCollected () {
+    toggleCollected () {
       this.hasCollected = !this.hasCollected
+      saveToLocal(this.sellerData.id, 'hasCollected', this.hasCollected)
     },
 
     _initScroll () {
@@ -151,7 +157,7 @@ export default {
       })
     }
   },
-
+  // 当没有使用 keep-alive 缓存组件时，此处 activated 可替换为 created 钩子
   activated () { // 在 keep-alive 中的组件被激活时调用, keep-alive 见 App.vue
     this.$nextTick(() => {
       this._initScroll()
@@ -318,20 +324,26 @@ export default {
       line-height: 14px;
     }
     .img-list-wrapper {
-      position: relative;
       width: 100%;
-      padding-top: percentage(90 / 378);  // 占用图片高度，防止图像加载完成造成的闪烁，需要与父元素 相对定位 和子元素 的绝对定位配合使用
       overflow: hidden;
       white-space: nowrap;
       .img-list {
-        position: absolute;
-        top: 0;
-        left: 0;
         .img-item {
           display: inline-block;
           margin-right: 6px;
+          width: 120px;
+          height: 90px;
           &:last-child {
             margin-right: 0;
+          }
+          .img-wrapper {
+            position: relative;
+            padding-top: percentage(90 / 120); // 占用图片高度，防止图像加载完成造成的闪烁，需要与父元素 相对定位 和子元素 的绝对定位配合使用
+            img {
+              position: absolute;
+              left: 0;
+              top: 0;
+            }
           }
         }
       }
