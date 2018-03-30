@@ -4,10 +4,13 @@
 
 本应用是非商用应用。
 
+项目总结：[点我][click-me]
+
 [master分支][master]使用 `Global Event Bus`
 
 [vuex分支][vuex]使用 `Vuex`
 
+[click-me]:https://lbwa.github.io/2018/03/28/note-for-food-app/
 ## 编码风格
 
 本实例中 JS 编写风格是参考 [JavaScript Standard Style][standard]

@@ -46,6 +46,8 @@ export default {
     // 取得头部商家信息
     getSeller({params: {id: this.sellerDetail.id}}).then(res => {
       if (res.errno === checkStatu) {
+        // https://cn.vuejs.org/v2/guide/reactivity.html#检测变化的注意事项
+        // 一定要是创建一个新对象，使其包含原对象属性和新属性。直接将新属性添加至原对象是无法触发数据更新的
         this.sellerDetail = Object.assign({}, this.sellerDetail, res.data)
       } else {
         throw Error(`Check errno failed, errno is ${res.errno} !`)
