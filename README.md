@@ -1,4 +1,5 @@
 # eleme-candy
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
 这个应用的诞生仅仅是为了提高自己的 JS 代码水平与样式布局能力，为了锻炼自己模块组织思维，以严格的标准要求自己，完全复原设计稿。
 
